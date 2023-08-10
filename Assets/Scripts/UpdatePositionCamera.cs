@@ -6,13 +6,15 @@ using UnityEngine.UIElements;
 
 public class UpdatePositionCamera : MonoBehaviour
 {
-    [SerializeField]
     public Transform player;
     Transform reajuste;
     public float velocidadeCamera;
-    public Transform pontoMin, pontoMax;
-    public bool estaNoLimite;
-    public string direcao;
+    RaycastHit2D hitUp;
+    RaycastHit2D hitDown;
+    RaycastHit2D hitRight;
+    RaycastHit2D hitLeft;
+    public float distanceUpDown, distanceRightLeft;
+    public LayerMask blockCamera;
 
     private void Start()
     {
@@ -20,51 +22,40 @@ public class UpdatePositionCamera : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if ( estaNoLimite == false )
-        CameraSmooth();
-        
+
+        CameraSmooth();   
+
     }
 
     private void Update()
     {
-        if ( estaNoLimite == false)
-        {
-            if (player.position.x < pontoMin.position.x)
-            {
-                direcao = "Esquerda";
-            }
-
-            if (player.position.x > pontoMin.position.x)
-            {
-                direcao = "Direita";
-            }
-        }
-
-        if(estaNoLimite == true || player.position.x > transform.position.x || direcao == "Esquerda")
-        {
-            estaNoLimite = false;
-        }
-
-        if (estaNoLimite == true || player.position.x < transform.position.x || direcao == "Direta")
-        {
-            estaNoLimite = false;
-        }
-
+        hitUp = Physics2D.Raycast(player.position, Vector2.up, distanceUpDown, blockCamera);
+        hitDown = Physics2D.Raycast(player.position, Vector2.down, distanceUpDown, blockCamera);
+        hitRight = Physics2D.Raycast(player.position, Vector2.right, distanceRightLeft, blockCamera);
+        hitLeft = Physics2D.Raycast(player.position, Vector2.left, distanceRightLeft, blockCamera);
+        
 
     }
 
 
     void CameraSmooth()
     {
-        transform.position = Vector2.Lerp(transform.position, player.position, velocidadeCamera);
+        Vector2 posicaoLerp = Vector2.Lerp(transform.position, player.position, velocidadeCamera);
+
+        if (hitRight.collider == null && hitLeft.collider == null)
+        {
+            transform.position = new Vector2(posicaoLerp.x, transform.position.y);
+        }
+
+        if (hitUp.collider == null)
+        {
+            transform.position = new Vector2(transform.position.x, posicaoLerp.y);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "BarreiraCamera")
-        {
-            estaNoLimite = true;
-        }
+    
     }
 
     private void OnTriggerStay2D(Collider2D collision)
