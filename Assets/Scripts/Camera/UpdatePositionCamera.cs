@@ -15,6 +15,7 @@ public class UpdatePositionCamera : MonoBehaviour
     RaycastHit2D hitLeft;
     public float distanceUpDown, distanceRightLeft;
     public LayerMask blockCamera;
+    float direcaoCamera = 1;
 
     private void Start()
     {
@@ -37,32 +38,39 @@ public class UpdatePositionCamera : MonoBehaviour
 
     }
 
-
     void CameraSmooth()
     {
+        if (Input.GetAxisRaw("Horizontal") != 0)
+        {
+            direcaoCamera = Input.GetAxisRaw("Horizontal") * 0.7f;
+        }
+
+        
         Vector2 posicaoLerp = Vector2.Lerp(transform.position, player.position, velocidadeCamera);
 
-        if (hitRight.collider == null && hitLeft.collider == null)
-        {
-            transform.position = new Vector2(posicaoLerp.x, transform.position.y);
-        }
+        transform.position = new Vector2(posicaoLerp.x + direcaoCamera, transform.position.y);
+        
+
 
         if (hitUp.collider == null)
         {
             transform.position = new Vector2(transform.position.x, posicaoLerp.y);
         }
-    }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-    
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.tag == "BarreiraCamera")
+        if (hitLeft.collider != null)
         {
+            if (transform.position.x < hitLeft.collider.transform.position.x + 27f)
+            {
+                transform.position = new Vector2(hitLeft.collider.transform.position.x + 27f, transform.position.y);
+            }
+        }
 
+        if (hitRight.collider != null)
+        {
+            if (transform.position.x > hitRight.collider.transform.position.x - 27f)
+            {
+                transform.position = new Vector2(hitRight.collider.transform.position.x - 27f, transform.position.y);
+            }
         }
     }
 }

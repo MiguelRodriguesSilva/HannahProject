@@ -8,6 +8,7 @@ public class PlayerHannah : MonoBehaviour
     public float alturaPulo = 5;
     Rigidbody2D rgHannah;
     private bool isFalling = false;
+    public int direcaoPersonagem;
     // Start is called before the first frame update
     void Start()
     {
@@ -29,6 +30,11 @@ public class PlayerHannah : MonoBehaviour
                 rgHannah.AddForce(transform.up * alturaPulo * 100);
             }
 
+        }
+
+        if (Input.GetAxisRaw("Horizontal") == 1)
+        {
+            direcaoPersonagem = 1;
         }
         
     }
