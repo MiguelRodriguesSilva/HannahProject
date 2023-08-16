@@ -42,8 +42,10 @@ public class UpdatePositionCamera : MonoBehaviour
     {
         if (Input.GetAxisRaw("Horizontal") != 0)
         {
-            direcaoCamera = Input.GetAxisRaw("Horizontal") * 0.7f;
+            direcaoCamera = Input.GetAxisRaw("Horizontal") * 0.3f;
         }
+
+        float pontoAjusteBarreira = 27f;
 
         
         Vector2 posicaoLerp = Vector2.Lerp(transform.position, player.position, velocidadeCamera);
@@ -59,17 +61,18 @@ public class UpdatePositionCamera : MonoBehaviour
 
         if (hitLeft.collider != null)
         {
-            if (transform.position.x < hitLeft.collider.transform.position.x + 27f)
+            if (transform.position.x < hitLeft.collider.transform.position.x + pontoAjusteBarreira)
             {
-                transform.position = new Vector2(hitLeft.collider.transform.position.x + 27f, transform.position.y);
+                transform.position = new Vector2(hitLeft.collider.transform.position.x + pontoAjusteBarreira, transform.position.y);
+                
             }
         }
 
         if (hitRight.collider != null)
         {
-            if (transform.position.x > hitRight.collider.transform.position.x - 27f)
+            if (transform.position.x > hitRight.collider.transform.position.x - pontoAjusteBarreira)
             {
-                transform.position = new Vector2(hitRight.collider.transform.position.x - 27f, transform.position.y);
+                transform.position = new Vector2(hitRight.collider.transform.position.x - pontoAjusteBarreira, transform.position.y);
             }
         }
     }
