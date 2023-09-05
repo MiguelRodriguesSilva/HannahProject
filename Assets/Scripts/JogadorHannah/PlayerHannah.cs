@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class PlayerHannah : MonoBehaviour
 {
-    public float velocidadeHannah = 5;
-    public float alturaPulo = 5;
-    Rigidbody2D rgHannah;
+    [SerializeField] float velocidadeHannah = 5;
+    [SerializeField] float alturaPulo = 5;
+    private Rigidbody2D rgHannah;
+    private SpriteRenderer srHannah;
     private bool isFalling = false;
-    public int direcaoPersonagem;
+    private InputJogador action;
+
     // Start is called before the first frame update
-    void Start()
+
+    private void Awake()
     {
+        srHannah = GetComponent<SpriteRenderer>();
+        action = GetComponent<InputJogador>();
         rgHannah = GetComponent<Rigidbody2D>();
     }
 
@@ -25,16 +30,11 @@ public class PlayerHannah : MonoBehaviour
     {
         if (isFalling == false)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (action.input.Player.Pulo.WasPressedThisFrame())
             {
                 rgHannah.AddForce(transform.up * alturaPulo * 100);
             }
 
-        }
-
-        if (Input.GetAxisRaw("Horizontal") == 1)
-        {
-            direcaoPersonagem = 1;
         }
         
     }
@@ -42,8 +42,18 @@ public class PlayerHannah : MonoBehaviour
     void Movimentacao()
     {
 
-        float horizontalMove = Input.GetAxisRaw("Horizontal");
-        transform.Translate(Vector3.right * velocidadeHannah * horizontalMove * Time.deltaTime);
+        float x = action.input.Player.Movimento.ReadValue<float>();
+        transform.Translate(Vector3.right * x * velocidadeHannah * Time.deltaTime);
+
+        if (x < 0)
+        {
+            srHannah.flipX = true;
+        }
+        else if (x > 0)
+        {
+            srHannah.flipX = false;
+        }
+
     }
 
     private void OnTriggerStay2D(Collider2D collision)

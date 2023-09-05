@@ -6,17 +6,22 @@ using UnityEngine.UIElements;
 
 public class UpdatePositionCamera : MonoBehaviour
 {
-    public Transform player;
-    Transform reajuste;
-    public float velocidadeCamera;
-    RaycastHit2D hitUp;
-    RaycastHit2D hitDown;
-    RaycastHit2D hitRight;
-    RaycastHit2D hitLeft;
-    public float distanceUpDown, distanceRightLeft;
-    public LayerMask blockCamera;
+    private SpriteRenderer srP;
+    private Transform player;
     float direcaoCamera = 1;
+    [SerializeField] float distanceUpDown, distanceRightLeft;
+    [SerializeField] float velocidadeCamera;
+    [SerializeField] LayerMask blockCamera;
+    private RaycastHit2D hitUp;
+    private RaycastHit2D hitDown;
+    private RaycastHit2D hitRight;
+    private RaycastHit2D hitLeft;
 
+    private void Awake()
+    {
+        srP = FindObjectOfType<PlayerHannah>().GetComponent<SpriteRenderer>();
+        player = FindObjectOfType<PlayerHannah>().transform;
+    }
     private void Start()
     {
         transform.position = player.position; 
@@ -40,9 +45,13 @@ public class UpdatePositionCamera : MonoBehaviour
 
     void CameraSmooth()
     {
-        if (Input.GetAxisRaw("Horizontal") != 0)
+        if (srP.flipX == false)
         {
-            direcaoCamera = Input.GetAxisRaw("Horizontal") * 0.3f;
+            direcaoCamera = 0.3f;
+        }
+        else
+        {
+            direcaoCamera = -0.3f;
         }
 
         float pontoAjusteBarreira = 27f;
