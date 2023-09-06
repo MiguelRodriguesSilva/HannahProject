@@ -14,7 +14,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Player
   - 
   - BlockCamera
   - 
@@ -46,4 +46,7 @@ TagManager:
     locked: 0
   - name: Player
     uniqueID: 3066451447
+    locked: 0
+  - name: Inimigos
+    uniqueID: 3577248601
     locked: 0

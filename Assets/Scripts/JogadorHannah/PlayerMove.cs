@@ -12,6 +12,7 @@ public class PlayerMove : MonoBehaviour
     private SpriteRenderer srHannah;
     private bool isFalling = false;
     private InputJogador action;
+    public bool podeMover = true;
 
     // Start is called before the first frame update
 
@@ -20,12 +21,17 @@ public class PlayerMove : MonoBehaviour
         srHannah = GetComponent<SpriteRenderer>();
         action = GetComponent<InputJogador>();
         rgHannah = GetComponent<Rigidbody2D>();
+        podeMover = true;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        Movimentacao();
+        if (podeMover == true)
+        {
+            Movimentacao();
+        }
+        
     }
 
     private void Update()
