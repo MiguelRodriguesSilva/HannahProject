@@ -19,8 +19,9 @@ public class UpdatePositionCamera : MonoBehaviour
 
     private void Awake()
     {
-        srP = FindObjectOfType<PlayerHannah>().GetComponent<SpriteRenderer>();
-        player = FindObjectOfType<PlayerHannah>().transform;
+        srP = FindObjectOfType<PlayerMove>().GetComponent<SpriteRenderer>();
+        player = FindObjectOfType<PlayerMove>().transform;
+
     }
     private void Start()
     {

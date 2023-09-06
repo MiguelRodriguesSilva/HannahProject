@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerHannah : MonoBehaviour
+public class PlayerMove : MonoBehaviour
 {
+    [Header("Movimentacao")]
     [SerializeField] float velocidadeHannah = 5;
     [SerializeField] float alturaPulo = 5;
+    public bool spriteInvertido = false;
     private Rigidbody2D rgHannah;
     private SpriteRenderer srHannah;
     private bool isFalling = false;
@@ -36,6 +38,8 @@ public class PlayerHannah : MonoBehaviour
             }
 
         }
+
+        spriteInvertido = GetComponent<SpriteRenderer>().flipX;
         
     }
 
