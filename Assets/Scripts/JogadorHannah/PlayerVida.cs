@@ -121,7 +121,7 @@ public class PlayerVida : MonoBehaviour
                     {
                         _barraCritico.localScale = new Vector2(_porcent * vidaAtual, _barraCritico.localScale.y);
                     }
-                    StopAllCoroutines();
+                    StopCoroutine(DanoCritico());
                     StartCoroutine(DanoCritico());
                     vidaAtual -= quantiDano;
                 }

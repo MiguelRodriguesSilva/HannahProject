@@ -20,6 +20,9 @@ public class EsqueletoMove : MonoBehaviour
     public bool estaAtacando;
     private Collider2D co;
     private bool jaChecou;
+    private float _scaleX;
+    private Vector2 direction;
+    private Vector2 dir;
 
 
     private void Awake()
@@ -28,92 +31,78 @@ public class EsqueletoMove : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         playerVida = FindObjectOfType<PlayerVida>();
         co = GetComponent<EdgeCollider2D>();
+        
+
+    }
+
+    private void Start()
+    {
+        _scaleX = transform.localScale.x;
 
     }
 
     private void FixedUpdate()
     {
+        direction = (_Player - transform.position).normalized;
+        dir = (FindObjectOfType<PlayerMove>().transform.position - transform.position).normalized;
+        hitLeft = Physics2D.Raycast(transform.position + new Vector3(0, alturaOlhos, 0), new Vector2(-1, dir.y ), distanceVision, lPlayer);
+        hitRight = Physics2D.Raycast(transform.position + new Vector3(0, alturaOlhos, 0), new Vector2(1, dir.y), distanceVision, lPlayer);
         Movimento();
         Attack();
-        
     }
 
     void Movimento()
     {
-        hitLeft = Physics2D.Raycast(transform.position + new Vector3 (0 , alturaOlhos, 0), Vector2.left, distanceVision, lPlayer);
-        hitRight = Physics2D.Raycast(transform.position + new Vector3(0, alturaOlhos, 0), Vector2.right, distanceVision, lPlayer);
-
-
         if (estaVendo == false)
         {
-            if (transform.rotation == new Quaternion(0, 180, 0, co.transform.rotation.w))
+            if (transform.localScale.x == _scaleX && hitLeft.collider != null && hitLeft.distance < rangeFlip && estaAtacando == false)
             {
-                if (hitLeft.collider != null)
-                {
-                    _Player = hitLeft.collider.transform.position;
-                    StartCoroutine(ViuPersonagem());
-                    estaVendo = true;
-                }
+                transform.localScale = new Vector3(-_scaleX, transform.localScale.y, transform.localScale.z);
+                estaVendo = true;
+                StartCoroutine(ViuPersonagem());
             }
-            else if (hitLeft.collider != null && hitLeft.distance < rangeFlip)
+            else if (transform.localScale.x != _scaleX && hitRight.collider != null && hitRight.distance < rangeFlip && estaAtacando == false)
             {
-                transform.rotation = new Quaternion(0, 180, 0, co.transform.rotation.w);
+                transform.localScale = new Vector3(_scaleX, transform.localScale.y, transform.localScale.z);
+                estaVendo = true;
+                StartCoroutine(ViuPersonagem());
             }
             
-            if (transform.rotation == new Quaternion(0, 0, 0, co.transform.rotation.w))
+            if (transform.localScale.x == _scaleX && hitRight.collider != null)
             {
-                if (hitRight.collider != null)
-                {
-                    StartCoroutine(ViuPersonagem());
-                    estaVendo = true;
-                }
+                StartCoroutine(ViuPersonagem());
+                estaVendo = true;
             }
-            else if (hitRight.collider != null && hitRight.distance < rangeFlip)
+            else if(transform.localScale.x != _scaleX && hitLeft.collider != null)
             {
-                transform.rotation = new Quaternion(0, 0, 0, co.transform.rotation.w);
+                StartCoroutine(ViuPersonagem());
+                estaVendo = true;
             }
-
-
         }
         else if (estaVendo == true)
         {
             if (hitLeft.collider != null)
             {
-                if (estaAtacando == false)
-                {
-                    transform.rotation = new Quaternion(0, 180, 0, co.transform.rotation.w);
-                }
-                
                 _Player = hitLeft.collider.transform.position;
             }
 
             if (hitRight.collider != null)
             {
-                if (estaAtacando == false)
-                {
-                    transform.rotation = new Quaternion(0, 0, 0, co.transform.rotation.w);
-                }
                 _Player = hitRight.collider.transform.position;
             }
-
-
         }
 
-        if (hitLeft.collider == null && hitRight.collider == null)
+        if (hitRight.collider == null && hitLeft.collider == null)
         {
             estaVendo = false;
         }
 
-
-        Debug.DrawRay(transform.position + new Vector3(0, alturaOlhos, 0), Vector2.right * distanceVision, Color.red);
-
-        Vector2 direction = (_Player - transform.position).normalized;
         if (anim.GetBool("estaAndando") == true)
         {
-            transform.Translate(Vector2.right * speed * Time.deltaTime);
+            transform.Translate(new Vector2(-direction.x, transform.position.y) * speed * Time.deltaTime);
         }
 
-        if (estaAtacando == false && hitLeft.collider != null && hitLeft.distance < rangeAttack || estaAtacando == true)
+        if (estaAtacando == false && hitLeft.collider != null && hitLeft.distance <= rangeAttack || estaAtacando == true)
         {
             anim.SetBool("estaAndando", false);
 
@@ -124,7 +113,7 @@ public class EsqueletoMove : MonoBehaviour
         }
        
 
-        if ((estaAtacando == false && hitRight.collider != null && hitRight.distance < rangeAttack) || estaAtacando == true)
+        if ((estaAtacando == false && hitRight.collider != null && hitRight.distance <= rangeAttack) || estaAtacando == true)
         {
             anim.SetBool("estaAndando", false);
 
@@ -138,6 +127,8 @@ public class EsqueletoMove : MonoBehaviour
         {
             anim.SetBool("estaAndando", false);
         }
+
+        Debug.DrawRay(transform.position + new Vector3(0, alturaOlhos, 0), dir * distanceVision, Color.red);
 
     }
 
